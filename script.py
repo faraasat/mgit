@@ -123,8 +123,14 @@ def getUserInputForAction(action):
                 MGIT_SERVICE, newUserList[int(user) - 1])
             rmtUrl = "https://" + creds.username + ":" + creds.password + "@" + \
                 repo.remotes[0].config_reader.get("url").split("https://")[1]
-            resp = run_git_command(f"git {action} {rmtUrl}")
-            print(resp)
+            if (action == "push"):
+                branch = run_git_command("git rev-parse --abbrev-ref HEAD")
+                resp = run_git_command(f"git push --set-upstream {rmtUrl}/{branch}")
+                print(resp)
+                # print(f"git push {rmtUrl} {branch}")
+            else:
+                resp = run_git_command(f"git pull {rmtUrl}")
+                print(resp)
     else:
         print(
             "\033[1m\033[4m\033[31m\033[3m\nError: Invalid Positional Argument! Argument must be a number.\n\033[0m")
