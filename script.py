@@ -125,8 +125,8 @@ def getUserInputForAction(action):
                 repo.remotes[0].config_reader.get("url").split("https://")[1]
             if (action == "push"):
                 branch = run_git_command("git rev-parse --abbrev-ref HEAD")
-                resp = run_git_command(f"git push --set-upstream {rmtUrl}")
-                # print(resp)
+                resp = run_git_command(f"git push --set-upstream {rmtUrl} {branch}")
+                print(resp)
                 # print(f"git push {rmtUrl} {branch}")
                 print("Pushed to remote!")
             else:
