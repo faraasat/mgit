@@ -1,0 +1,2 @@
+keyring==24.2.0
+py-setenv==1.1.0
