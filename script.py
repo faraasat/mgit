@@ -28,7 +28,7 @@ def getHelp(showGreetings=True):
         print(
             f"\033[1m\033[4m\033[35m\033[5m\n\t\t\t\tWelcome to MultiGit\t\t\t\033[0m")
         print()
-    print(f"\033[1m\033[36mset <username> <password>        \033[0m=>       to set git username and password")
+    print(f"\033[1m\033[36mset <username> <token>         \033[0m=>       to set git username and password")
     print(
         f"\033[1m\033[36mget                              \033[0m=>       to get all users")
     print(
@@ -98,9 +98,14 @@ def remove_credentials(username):
 
 
 def getUserInputForAction(action):
+    if (len(repo.remotes) == 0):
+        print(
+            "\033[1m\033[4m\033[31m\033[3m\nError: No Remote is set! Please publish the repo first.\n\033[0m")
+        return
     get_credentials()
     user = input(
         "\nPlease make selection by entering a number to perform action using the user: ")
+    print()
     if (str.isnumeric(user)):
         var_value = setenv(MGIT_ENV, user=True, suppress_echo=True)
         userList = var_value.split("|")
@@ -116,13 +121,10 @@ def getUserInputForAction(action):
         else:
             creds = keyring.get_credential(
                 MGIT_SERVICE, newUserList[int(user) - 1])
-            # print(creds.username)
-            # print(creds.password)
-            # subprocess()
-            abc = run_git_command("git remote show")
-            print(abc)
-            print(repo.remotes)
-            # print(f"https://Username`**:**`Password`**@**`github.com/myRepoDir/myRepo.git`")
+            rmtUrl = "https://" + creds.username + ":" + creds.password + "@" + \
+                repo.remotes[0].config_reader.get("url").split("https://")[1]
+            resp = run_git_command(f"git {action} {rmtUrl}")
+            print(resp)
     else:
         print(
             "\033[1m\033[4m\033[31m\033[3m\nError: Invalid Positional Argument! Argument must be a number.\n\033[0m")
